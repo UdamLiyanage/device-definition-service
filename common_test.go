@@ -26,6 +26,7 @@ func newRouter() *gin.Engine {
 	})
 	r.GET("/device-definitions/:id", readDefinition)
 	r.POST("/device-definitions", createDefinition)
+	r.PUT("/device-definitions/:id", updateDefinition)
 	r.DELETE("/device-definitions/:id", deleteDefinition)
 	return r
 }
