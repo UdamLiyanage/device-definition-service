@@ -14,7 +14,7 @@ func createDefinition(c *gin.Context) {
 	insertResult, err := DB.Collection.InsertOne(context.TODO(), definition)
 	checkError(err, c)
 	if oid, ok := insertResult.InsertedID.(primitive.ObjectID); ok {
-		definition.ID = oid.String()
+		definition.ID = oid
 		c.JSON(201, definition)
 	} else {
 		c.AbortWithStatus(500)

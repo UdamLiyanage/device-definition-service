@@ -17,5 +17,7 @@ func TestCreateDefinition(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	testRequestStatusCode("POST", "/device-definitions", body, http.StatusCreated, t)
+	w := testRequestStatusCode("POST", "/device-definitions", body, http.StatusCreated, t)
+
+	testDeleteDefinition(t, *w, &definition)
 }
