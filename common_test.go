@@ -13,6 +13,7 @@ import (
 
 func TestMain(m *testing.M) {
 	gin.SetMode(gin.TestMode)
+	DB.Collection = connect()
 	os.Exit(m.Run())
 }
 
