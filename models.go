@@ -8,6 +8,6 @@ type DeviceDefinition struct {
 	Organisations []interface{}     `json:"organisations,omitempty" bson:"organisation,omitempty"`
 	Users         []interface{}     `json:"users,omitempty" bson:"users,omitempty"`
 	Events        []string          `json:"events,omitempty" bson:"events,omitempty"`
-	Actions       []string          `json:"actions,omitempty" bson:"events,omitempty"`
+	Actions       []interface{}     `json:"actions,omitempty" bson:"actions,omitempty"`
 	Parameters    map[string]string `json:"parameters,omitempty" bson:"omitempty"`
 }

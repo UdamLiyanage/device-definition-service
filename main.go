@@ -25,6 +25,8 @@ func setupRouter() *gin.Engine {
 		})
 	})
 
+	r.POST("/devices-definitions", createDefinition)
+
 	return r
 }
 

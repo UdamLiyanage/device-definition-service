@@ -24,6 +24,7 @@ func newRouter() *gin.Engine {
 			"message": "Ping Successful",
 		})
 	})
+	r.POST("/device-definitions", createDefinition)
 	return r
 }
 
