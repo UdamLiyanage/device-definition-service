@@ -26,7 +26,7 @@ func setupRouter() *gin.Engine {
 	})
 	r.GET("/device-definitions/:id", readDefinition)
 
-	r.POST("/devices-definitions", createDefinition)
+	r.POST("/devices-definitions/create", createDefinition)
 
 	r.PUT("/device-definitions/:id", updateDefinition)
 
