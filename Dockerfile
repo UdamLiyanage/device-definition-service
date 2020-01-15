@@ -23,7 +23,7 @@ WORKDIR /root/
 # Copy the Pre-built binary file from the previous stage
 COPY --from=builder /app/main .
 
-# Expose port 8002 to the outside world
+# Expose port 8004 to the outside world
 EXPOSE 8004
 
 # Command to run the executable
