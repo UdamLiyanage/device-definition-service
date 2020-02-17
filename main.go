@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	_ "github.com/joho/godotenv/autoload"
 	"github.com/unrolled/secure"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
@@ -44,7 +45,7 @@ func setupRouter() *gin.Engine {
 
 	r := gin.Default()
 	auth := gin.BasicAuth(gin.Accounts{
-		"username": "password",
+		os.Getenv("API_AUTH_USERNAME"): os.Getenv("API_AUTH_PASSWORD"),
 	})
 	r.Use(auth)
 	r.Use(secureFunc)
