@@ -2,8 +2,10 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/unrolled/secure"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
+	"os"
 )
 
 type Database struct {
@@ -17,13 +19,36 @@ func init() {
 }
 
 func setupRouter() *gin.Engine {
-	r := gin.Default()
-
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "Ping Successful",
-		})
+	secureMiddleware := secure.New(secure.Options{
+		AllowedHosts:  []string{os.Getenv("ALLOWED_HOSTS")},
+		SSLRedirect:   true,
+		STSSeconds:    31536000,
+		FrameDeny:     true,
+		IsDevelopment: false,
 	})
+
+	secureFunc := func() gin.HandlerFunc {
+		return func(c *gin.Context) {
+			err := secureMiddleware.Process(c.Writer, c.Request)
+
+			if err != nil {
+				c.Abort()
+				return
+			}
+
+			if status := c.Writer.Status(); status > 300 && status < 399 {
+				c.Abort()
+			}
+		}
+	}()
+
+	r := gin.Default()
+	auth := gin.BasicAuth(gin.Accounts{
+		"username": "password",
+	})
+	r.Use(auth)
+	r.Use(secureFunc)
+
 	r.GET("/device-definitions/:id", readDefinition)
 
 	r.POST("/device-definitions/create", createDefinition)
