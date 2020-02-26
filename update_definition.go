@@ -2,18 +2,20 @@ package main
 
 import (
 	"context"
-	"encoding/json"
-	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func updateDefinition(c *gin.Context) {
+func updateDefinition(c echo.Context) error {
 	var definition DeviceDefinition
-	err := json.NewDecoder(c.Request.Body).Decode(&definition)
-	checkError(err, c)
+	if err := c.Bind(definition); err != nil {
+		return err
+	}
 	objID, err := primitive.ObjectIDFromHex(c.Param("id"))
-	checkError(err, c)
+	if checkError(err) {
+		return c.JSON(500, err)
+	}
 	filter := bson.M{"_id": objID}
 	update := bson.M{
 		"$set": bson.M{
@@ -26,6 +28,8 @@ func updateDefinition(c *gin.Context) {
 		},
 	}
 	res, err := DB.Collection.UpdateOne(context.TODO(), filter, update)
-	checkError(err, c)
-	c.JSON(200, res)
+	if checkError(err) {
+		return c.JSON(500, err)
+	}
+	return c.JSON(200, res)
 }

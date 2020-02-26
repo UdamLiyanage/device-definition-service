@@ -1,4 +1,4 @@
-IMAGE := udamliyanage/device-definition-service:v1.1
+IMAGE := udamliyanage/device-definition-service:v2.0.0
 
 test:
 	true

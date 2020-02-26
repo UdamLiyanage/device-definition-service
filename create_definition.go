@@ -2,21 +2,23 @@ package main
 
 import (
 	"context"
-	"encoding/json"
-	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func createDefinition(c *gin.Context) {
+func createDefinition(c echo.Context) error {
 	var definition DeviceDefinition
-	err := json.NewDecoder(c.Request.Body).Decode(&definition)
-	checkError(err, c)
+	if err := c.Bind(definition); err != nil {
+		return err
+	}
 	insertResult, err := DB.Collection.InsertOne(context.TODO(), definition)
-	checkError(err, c)
+	if checkError(err) {
+		return c.JSON(500, err)
+	}
 	if oid, ok := insertResult.InsertedID.(primitive.ObjectID); ok {
 		definition.ID = oid
-		c.JSON(201, definition)
+		return c.JSON(201, definition)
 	} else {
-		c.AbortWithStatus(500)
+		return c.JSON(500, err)
 	}
 }
