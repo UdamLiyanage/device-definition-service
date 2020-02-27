@@ -34,6 +34,7 @@ func setupRouter() *echo.Echo {
 	e.Use(middleware.Recover())
 
 	e.GET("/device-definitions/:id", readDefinition)
+	e.GET("/device-definitions/all/:id", readAllDefinitions)
 
 	e.POST("/device-definitions/create", createDefinition)
 

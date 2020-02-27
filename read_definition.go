@@ -19,3 +19,25 @@ func readDefinition(c echo.Context) error {
 	}
 	return c.JSON(200, definition)
 }
+
+func readAllDefinitions(c echo.Context) error {
+	var definitions []DeviceDefinition
+	userID := c.Param("id")
+	filter := bson.D{{"uid", userID}}
+	cur, err := DB.Collection.Find(context.TODO(), filter)
+	if err != nil {
+		panic(err)
+	}
+	for cur.Next(context.TODO()) {
+		var definition DeviceDefinition
+		err := cur.Decode(&definition)
+		if err != nil {
+			panic(err)
+		}
+		definitions = append(definitions, definition)
+	}
+	if err := cur.Err(); err != nil {
+		panic(err)
+	}
+	return c.JSON(200, definitions)
+}
