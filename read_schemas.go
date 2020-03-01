@@ -8,20 +8,20 @@ import (
 )
 
 func readDefinition(c echo.Context) error {
-	var definition DeviceDefinition
+	var schema DeviceSchema
 	objID, err := primitive.ObjectIDFromHex(c.Param("id"))
 	if checkError(err) {
 		return c.JSON(500, err)
 	}
-	err = DB.Collection.FindOne(context.TODO(), bson.M{"_id": objID}).Decode(&definition)
+	err = DB.Collection.FindOne(context.TODO(), bson.M{"_id": objID}).Decode(&schema)
 	if checkError(err) {
 		return c.JSON(500, err)
 	}
-	return c.JSON(200, definition)
+	return c.JSON(200, schema)
 }
 
 func readAllDefinitions(c echo.Context) error {
-	var definitions []DeviceDefinition
+	var schemas []DeviceSchema
 	userID := c.Param("id")
 	filter := bson.D{{"uid", userID}}
 	cur, err := DB.Collection.Find(context.TODO(), filter)
@@ -29,15 +29,15 @@ func readAllDefinitions(c echo.Context) error {
 		panic(err)
 	}
 	for cur.Next(context.TODO()) {
-		var definition DeviceDefinition
-		err := cur.Decode(&definition)
+		var schema DeviceSchema
+		err := cur.Decode(&schema)
 		if err != nil {
 			panic(err)
 		}
-		definitions = append(definitions, definition)
+		schemas = append(schemas, schema)
 	}
 	if err := cur.Err(); err != nil {
 		panic(err)
 	}
-	return c.JSON(200, definitions)
+	return c.JSON(200, schemas)
 }
