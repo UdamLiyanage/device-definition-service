@@ -45,3 +45,55 @@ This service is reponsible for:
 	}
 }
 ```
+
+## Document structure for Device Definition - Revision 2
+```
+{
+	"_id": "Object ID",
+	"version": "Definition Version 1",
+	"name": "Definition Name",
+	"type": "Device Type",
+	"public": "true|false",
+	"communication": {
+		"protocol": "http|mqtt|coap",
+		"credentials": {
+			"url": "",
+			"authentication": {
+				"type": "basic",
+				"username": "username",
+				"password": "password"
+			}
+		}
+	},
+	"description": "Description",
+	"uid": "User ID",
+	"latest_firmware_version": "v1.5",
+	"commands": [{
+			"name": "command name",
+			"type": "Data Type"
+		},
+		{
+			"name": "command name",
+			"type": "Data Type"
+		}
+	],
+	"command_format": {
+		"format_type": "json|csv",
+		"payload": {
+			"temp": "Temperature",
+			"power": "on"
+		}
+	},
+	"parameters": [{
+			"name": "temperature",
+			"parameter": "t",
+			"data_type": "float"
+		},
+		{
+			"name": "humidity",
+			"parameter": "h",
+			"data_type": "integer"
+		}
+	]
+}
+```
