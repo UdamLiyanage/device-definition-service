@@ -19,7 +19,7 @@ func deleteDefinition(c echo.Context) error {
 		return c.JSON(500, err)
 	}
 	filter := bson.D{bson.E{Key: "_id", Value: objID}}
-	_, err = DB.Collection.DeleteOne(context.TODO(), filter, opts)
+	_, err = collection.DeleteOne(context.TODO(), filter, opts)
 	if checkError(err) {
 		return c.JSON(500, err)
 	}

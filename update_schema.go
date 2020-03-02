@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"encoding/json"
+	json "github.com/json-iterator/go"
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -34,7 +34,7 @@ func updateDefinition(c echo.Context) error {
 		},
 	}
 	schema.UpdatedAt = time.Now()
-	res, err := DB.Collection.UpdateOne(context.TODO(), filter, update)
+	res, err := collection.UpdateOne(context.TODO(), filter, update)
 	if checkError(err) {
 		return c.JSON(500, err)
 	}

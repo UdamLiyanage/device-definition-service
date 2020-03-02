@@ -13,7 +13,7 @@ func readDefinition(c echo.Context) error {
 	if checkError(err) {
 		return c.JSON(500, err)
 	}
-	err = DB.Collection.FindOne(context.TODO(), bson.M{"_id": objID}).Decode(&schema)
+	err = collection.FindOne(context.TODO(), bson.M{"_id": objID}).Decode(&schema)
 	if checkError(err) {
 		return c.JSON(500, err)
 	}
@@ -24,7 +24,7 @@ func readAllDefinitions(c echo.Context) error {
 	var schemas []DeviceSchema
 	userID := c.Param("id")
 	filter := bson.D{{"uid", userID}}
-	cur, err := DB.Collection.Find(context.TODO(), filter)
+	cur, err := collection.Find(context.TODO(), filter)
 	if err != nil {
 		panic(err)
 	}

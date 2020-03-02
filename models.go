@@ -12,15 +12,15 @@ type (
 		Name           string             `json:"name" bson:"name"`
 		UID            string             `json:"uid" bson:"uid"`
 		Type           string             `json:"type" bson:"type"`
-		Public         string             `json:"public" bson:"public"`
+		Public         bool               `json:"public" bson:"public"`
 		Description    string             `json:"description" bson:"description"`
 		LatestFirmware string             `json:"latest_firmware_version" bson:"latest_firmware_version"`
 		DeviceComm     Communication      `json:"communication" bson:"communication"`
-		Commands       []Command          `json:"commands" bson:"commands"`
+		Commands       []Command          `json:"commands,omitempty" bson:"commands,omitempty"`
 		CommandsFormat CommandFormat      `json:"command_format" bson:"command_format"`
-		Parameters     []Parameter        `json:"parameters,omitempty" bson:"omitempty"`
-		CreatedAt      time.Time          `json:"created_at,omitempty" bson:"created_at,omitempty"`
-		UpdatedAt      time.Time          `json:"updated_at,omitempty" bson:"updated_at,omitempty"`
+		Parameters     []Parameter        `json:"parameters" bson:"parameters"`
+		CreatedAt      time.Time          `json:"created_at,omitempty" bson:"created_at"`
+		UpdatedAt      time.Time          `json:"updated_at,omitempty" bson:"updated_at"`
 	}
 
 	Communication struct {
@@ -46,6 +46,6 @@ type (
 	Parameter struct {
 		Name      string `json:"name" bson:"name"`
 		Parameter string `json:"parameter" bson:"parameter"`
-		DataType  string `json:"data_type" bson:"parameter"`
+		DataType  string `json:"data_type" bson:"data_type"`
 	}
 )
