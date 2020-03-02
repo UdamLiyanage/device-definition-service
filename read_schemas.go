@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func readDefinition(c echo.Context) error {
@@ -15,6 +16,9 @@ func readDefinition(c echo.Context) error {
 	}
 	err = collection.FindOne(context.TODO(), bson.M{"_id": objID}).Decode(&schema)
 	if checkError(err) {
+		if err == mongo.ErrNoDocuments {
+			return c.JSON(404, nil)
+		}
 		return c.JSON(500, err)
 	}
 	return c.JSON(200, schema)

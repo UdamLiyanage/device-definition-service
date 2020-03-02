@@ -29,7 +29,7 @@ func setupRouter() *echo.Echo {
 
 	e.Use(middleware.Recover())
 
-	e.GET("/device-schemas/:id", readDefinition)
+	e.GET("/device-schemas/find/:id", readDefinition)
 	e.GET("/device-schemas/all/:id", readAllDefinitions)
 
 	e.POST("/device-schemas/create", createDefinition)
