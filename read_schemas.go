@@ -6,6 +6,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"log"
+	"os"
+	"strconv"
 )
 
 func readDefinition(c echo.Context) error {
@@ -25,23 +28,71 @@ func readDefinition(c echo.Context) error {
 }
 
 func readAllDefinitions(c echo.Context) error {
-	var schemas []DeviceSchema
-	userID := c.Param("id")
-	filter := bson.D{{"uid", userID}}
-	cur, err := collection.Find(context.TODO(), filter)
-	if err != nil {
-		panic(err)
-	}
-	for cur.Next(context.TODO()) {
-		var schema DeviceSchema
-		err := cur.Decode(&schema)
-		if err != nil {
-			panic(err)
+	var (
+		res Pager
+		err error
+	)
+	if lim := c.QueryParam("limit"); lim == "" {
+		res.Limit = 20
+		if n := c.QueryParam("next"); n != "" {
+			objID, err := primitive.ObjectIDFromHex(n)
+			if err != nil {
+				return c.JSON(500, err)
+			}
+			res.Filter = bson.D{
+				{"device_token", c.Param("token")},
+				{"_id", bson.D{{"$gt", objID}}},
+			}
+			res.FirstPage = false
+		} else if p := c.QueryParam("previous"); p != "" {
+			objID, err := primitive.ObjectIDFromHex(p)
+			if err != nil {
+				return c.JSON(500, err)
+			}
+			res.Filter = bson.D{
+				{"device_token", c.Param("token")},
+				{"_id", bson.D{{"$lt", objID}}},
+			}
+			res.FirstPage = false
+		} else {
+			res.Filter = bson.D{
+				{"device_token", c.Param("token")},
+			}
+			res.FirstPage = true
 		}
-		schemas = append(schemas, schema)
+	} else {
+		res.Limit, err = strconv.ParseInt(lim, 32, 64)
+		if err != nil {
+			log.Println("Error Occurred: ", err)
+			return c.JSON(500, err)
+		}
+		if n := c.QueryParam("next"); n != "" {
+			objID, err := primitive.ObjectIDFromHex(c.QueryParam("next"))
+			if err != nil {
+				return c.JSON(500, err)
+			}
+			res.Filter = bson.D{
+				{"device_token", c.Param("token")},
+				{"_id", bson.D{{"$gt", objID}}},
+			}
+			res.FirstPage = false
+		} else if p := c.QueryParam("previous"); p != "" {
+			objID, err := primitive.ObjectIDFromHex(p)
+			if err != nil {
+				return c.JSON(500, err)
+			}
+			res.Filter = bson.D{
+				{"device_token", c.Param("token")},
+				{"_id", bson.D{{"$lt", objID}}},
+			}
+			res.FirstPage = false
+		} else {
+			res.Filter = bson.D{
+				{"device_token", c.Param("token")},
+			}
+			res.FirstPage = true
+		}
 	}
-	if err := cur.Err(); err != nil {
-		panic(err)
-	}
-	return c.JSON(200, schemas)
+	res.URL = os.Getenv("SELF_ADDRESS") + c.Request().URL.Path
+	return c.JSON(200, res.Paginate())
 }

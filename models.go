@@ -1,11 +1,16 @@
 package main
 
 import (
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 )
 
 type (
+	Paginator interface {
+		Paginate() PaginateResult
+	}
+
 	DeviceSchema struct {
 		ID             primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
 		Version        string             `json:"version" bson:"version"`
@@ -47,5 +52,18 @@ type (
 		Name      string `json:"name" bson:"name"`
 		Parameter string `json:"parameter" bson:"parameter"`
 		DataType  string `json:"data_type" bson:"data_type"`
+	}
+
+	Pager struct {
+		Limit     int64
+		URL       string
+		FirstPage bool
+		Filter    bson.D
+	}
+
+	PaginateResult struct {
+		NextPage string         `json:"next_page"`
+		PrevPage string         `json:"previous_page"`
+		Data     []DeviceSchema `json:"data"`
 	}
 )
